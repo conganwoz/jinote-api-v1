@@ -1,0 +1,23 @@
+install all package from requirement.txt:
+-> python -m pip install -r requirements.txt
+
+install a package:
+-> python -m pip install package_name
+
+activate env:
+-> source env/bin/activate
+
+save all dependencies to requirements.txt:
+-> python -m pip freeze > requirements.txt
+
+note:
+-> a django project have multi app, usually have aleast one app
+
+generate a new project:
+-> django-admin startproject project_name .
+
+create app within project:
+-> python manage.py startapp app_name
+
+run django server:
+-> python manage.py runserver
