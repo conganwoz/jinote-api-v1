@@ -21,3 +21,40 @@ create app within project:
 
 run django server:
 -> python manage.py runserver
+
+
+SET UP DATABASE:
+start postgres server:
+-> sudo service postgresql start
+
+access psql:
+-> sudo -u postgres psql
+
+create database:
+-> CREATE DATABASE jinote;
+
+switch to db:
+-> \c jinote
+
+list all user:
+-> \du
+
+list all table:
+-> \dt
+
+create role:
+-> CREATE USER anluu WITH PASSWORD 'anluu';
+-> ALTER ROLE anluu SET client_encoding TO 'utf8';
+-> ALTER ROLE anluu SET default_transaction_isolation TO 'read committed';
+-> ALTER ROLE anluu SET timezone TO 'UTC';
+-> GRANT ALL PRIVILEGES ON DATABASE jinote to anluu;
+
+make migration:
+-> python3 manage.py makemigrations
+-> python3 manage.py migrate
+
+create supperuser:
+-> python3 manage.py createsuperuser # anluu - conganwoz@gmail.com - 1234
+
+allow connect to pory 8000:
+-> sudo ufw allow 8000
