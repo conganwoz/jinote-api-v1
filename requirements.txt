@@ -1,6 +1,7 @@
 asgiref==3.5.2
 attrs==19.3.0
 Automat==0.8.0
+beautifulsoup4==4.11.1
 blinker==1.4
 certifi==2019.11.28
 chardet==3.0.4
@@ -15,6 +16,7 @@ dbus-python==1.2.16
 distro==1.4.0
 distro-info===0.23ubuntu1
 Django==3.2.14
+django-livereload-server==0.4
 entrypoints==0.3
 greenlet==1.1.2
 httplib2==0.14.0
@@ -62,9 +64,11 @@ service-identity==18.1.0
 simplejson==3.16.0
 six==1.14.0
 sos==4.3
+soupsieve==2.3.2.post1
 sqlparse==0.4.2
 ssh-import-id==5.10
 systemd-python==234
+tornado==6.2
 Twisted==18.9.0
 typing-extensions==4.3.0
 ubuntu-advantage-tools==27.6
