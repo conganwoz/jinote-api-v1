@@ -2,6 +2,7 @@ from ..utils import common
 from api.models import Note
 
 def process_upload_params(body):
+    id = body.get('id')
     title = body.get('title')
     content = body.get('content')
     alias = body.get('alias')
@@ -24,6 +25,9 @@ def process_upload_params(body):
     if not common.is_empty(alias):
         default_params['alias'] = alias
 
+    if not common.is_empty(id):
+        default_params['id'] = id
+
     # TODO add hash password
 
     return default_params
@@ -43,6 +47,21 @@ def validate_params_upload(params):
             'params': None
         }
 
+    existed_note = None
+
+    if not common.is_empty(params.get('id')):
+        try:
+            existed_note = Note.objects.get(id=params.get('id'))
+        except Note.DoesNotExist:
+            existed_note = None
+
+        if common.is_empty(note):
+            return {
+                'is_valid': False,
+                'message': 'Ghi chú không xác định',
+                'params': None
+            }
+
     if common.is_empty(params.get('password')):
         return {
             'message': 'Vui lòng nhập password mở khoá bài viết',
@@ -50,7 +69,7 @@ def validate_params_upload(params):
             'params': None
         }
 
-    if common.is_empty(params.get('hashed_unlock_key')):
+    if common.is_empty(params.get('hashed_unlock_key')) and common.is_empty(params.get('id')):
         return {
             'is_valid': False,
             'message': 'Lỗi xử lý dữ liệu. Vui lòng thử lại sau',
@@ -60,7 +79,8 @@ def validate_params_upload(params):
     return {
         'is_valid': True,
         'message': None,
-        'params': params
+        'params': params,
+        'existed_note': existed_note
     }
 
 def insert(params):
@@ -73,6 +93,20 @@ def insert(params):
     note.save()
 
     return note
+
+def update(params):
+    existed_note = params.get('existed_note')
+    existed_note.title = params.get('title')
+    existed_note.content = params.get('content')
+    if not common.is_empty(params.get('alias')):
+        existed_note.alias = params.get('alias')
+
+    if not common.is_empty(params.get('hashed_unlock_key')):
+        existed_note.hashed_unlock_key = params.get('hashed_unlock_key')
+
+    existed_note.save()
+
+    return existed_note
 
 
 def format(note):

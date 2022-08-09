@@ -20,7 +20,7 @@ def upload_note(request):
         return JsonResponse({
             'success': True,
             'note': note_actions.format(saved_note),
-            'message': 'Lưu ghi chú thành công'
+            'message': 'Lưu ghi chú thành công. Hãy lưu trữ mã mở khoá của bạn để dùng lại.'
         })
     else:
         return JsonResponse(validate_result)
