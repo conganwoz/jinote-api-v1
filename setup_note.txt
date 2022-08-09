@@ -77,3 +77,6 @@ do migrate:
 
 list all migration:
 ->  python3 manage.py showmigrations
+
+un-apply migration:
+-> python manage.py migrate api migration_file_name before the migrattion want to un-apply
