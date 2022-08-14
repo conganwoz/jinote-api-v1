@@ -12,7 +12,7 @@ def process_upload_params(body):
         'title': '',
         'content': '',
         'alias': '',
-        'hashed_unlock_key': '$2b$12$PYG.ObLDW90BlCnAawSZHOxybm5iMxCjRFBKokVK0VvPXwvUj3hf6',
+        'hashed_unlock_key': common.passlib_encryption(password),
         'password': password
     }
 
@@ -28,7 +28,7 @@ def process_upload_params(body):
     if not common.is_empty(id):
         default_params['id'] = id
 
-    # TODO add hash password
+    print('default_params__', default_params, body)
 
     return default_params
 
@@ -83,6 +83,26 @@ def validate_params_upload(params):
         'existed_note': existed_note
     }
 
+def process_download_params(body):
+    alias = body.get('alias')
+    password = body.get('password')
+
+    return {
+        'alias': alias or '',
+        'password': password or ''
+    }
+
+def get_notes_by_password(params):
+    alias = params['alias']
+    password = params['password']
+    password_hashed = common.passlib_encryption(password)
+
+    notes = list(map(lambda note: format(note), Note.objects.filter(alias=alias)[::1]))
+    print('prev_notes_', notes)
+    notes = list(filter(lambda note: common.passlib_encryption_verify(password, note.get('hashed_unlock_key')), notes))
+
+    return notes
+
 def insert(params):
     title = params['title']
     content = params['content']
@@ -110,11 +130,13 @@ def update(params):
 
 
 def format(note):
+    id = note.id or ''
     title = note.title or ''
     content = note.content or ''
     alias = note.alias or ''
     inserted_at = note.inserted_at
     updated_at = note.updated_at
+    hashed_unlock_key = note.hashed_unlock_key or ''
 
     inserted_at = common.convert_to_vn_time(inserted_at)
     inserted_at = common.format_datetime(inserted_at)
@@ -123,10 +145,12 @@ def format(note):
     updated_at = common.format_datetime(updated_at)
 
     return {
+        'id': id,
         'title': title,
         'content': content,
         'alias': alias,
         'inserted_at': inserted_at,
-        'updated_at': updated_at
+        'updated_at': updated_at,
+        'hashed_unlock_key': hashed_unlock_key
     }
 

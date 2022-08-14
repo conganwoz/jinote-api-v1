@@ -25,3 +25,14 @@ def upload_note(request):
     else:
         return JsonResponse(validate_result)
 
+def download_notes(request):
+    body = request_utils.decode_body(request)
+
+    params = note_actions.process_download_params(body)
+
+    notes = note_actions.get_notes_by_password(params)
+
+    print('note_1_', notes)
+
+    return JsonResponse({'success': True, 'notes': notes})
+
