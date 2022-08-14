@@ -63,5 +63,20 @@ make migration:
 create supperuser:
 -> python3 manage.py createsuperuser # anluu - conganwoz@gmail.com - 1234
 
+connect db shell:
+->  python3 manage.py dbshell
+
 allow connect to pory 8000:
 -> sudo ufw allow 8000
+
+create new migration:
+->  python3 manage.py makemigrations api
+
+do migrate:
+->  python3 manage.py migrate
+
+list all migration:
+->  python3 manage.py showmigrations
+
+un-apply migration:
+-> python manage.py migrate api migration_file_name before the migrattion want to un-apply

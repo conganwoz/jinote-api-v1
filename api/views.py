@@ -1,3 +1,38 @@
 from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse
 
-# Create your views here.
+from .utils import request_utils
+from .actions import note_actions
+import json
+
+def say_hello(reuqest):
+    return HttpResponse('Hello World')
+
+def upload_note(request):
+    body = request_utils.decode_body(request)
+
+    params = note_actions.process_upload_params(body)
+
+    validate_result = note_actions.validate_params_upload(params)
+
+    if validate_result['is_valid']:
+        saved_note = note_actions.insert(validate_result.get('params'))
+        return JsonResponse({
+            'success': True,
+            'note': note_actions.format(saved_note),
+            'message': 'Lưu ghi chú thành công. Hãy lưu trữ mã mở khoá của bạn để dùng lại.'
+        })
+    else:
+        return JsonResponse(validate_result)
+
+def download_notes(request):
+    body = request_utils.decode_body(request)
+
+    params = note_actions.process_download_params(body)
+
+    notes = note_actions.get_notes_by_password(params)
+
+    print('note_1_', notes)
+
+    return JsonResponse({'success': True, 'notes': notes})
+
