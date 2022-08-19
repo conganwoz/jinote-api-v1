@@ -10,7 +10,6 @@ colorama==0.4.3
 configobj==5.0.6
 constantly==15.1.0
 cryptography==2.8
-dbus-python==1.2.16
 distro==1.4.0
 dj-database-url==1.0.0
 Django==3.2.14
@@ -44,7 +43,6 @@ pexpect==4.6.0
 psycopg2==2.9.3
 pyasn1==0.4.2
 pyasn1-modules==0.2.1
-PyGObject==3.36.0
 PyHamcrest==1.9.0
 PyJWT==1.7.1
 pymacaroons==0.13.0
