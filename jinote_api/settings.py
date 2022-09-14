@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import dj_database_url
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -86,11 +87,11 @@ WSGI_APPLICATION = 'jinote_api.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'jinote',
-        'USER': 'anluu',
-        'PASSWORD': 'anluu',
-        'HOST': 'localhost',
-        'PORT': '5433'
+        'NAME': os.environ.get('POSTGRES_NAME'), #'jinote',
+        'USER': os.environ.get('POSTGRES_USER'), #'anluu',
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'), #'anluu',
+        'HOST': 'db',
+        'PORT': '5432'
     }
 }
 
