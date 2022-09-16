@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'murmuring-citadel-47808.h
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -62,6 +63,17 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'jinote_api.urls'
 
+ASGI_APPLICATION = 'jinote_api.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -87,10 +99,10 @@ WSGI_APPLICATION = 'jinote_api.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_NAME'), #'jinote',
-        'USER': os.environ.get('POSTGRES_USER'), #'anluu',
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'), #'anluu',
-        'HOST': 'db',
+        'NAME': 'jinote',
+        'USER': 'anluu',
+        'PASSWORD': 'anluu',
+        'HOST': 'localhost',
         'PORT': '5432'
     }
 }
