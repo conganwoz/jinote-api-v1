@@ -5,6 +5,14 @@ from .utils import request_utils
 from .actions import note_actions
 import json
 
+def index(request):
+    return render(request, 'chat/index.html')
+
+def room(request, room_name):
+    return render(request, 'chat/room.html', {
+        'room_name': room_name
+    })
+
 def say_hello(reuqest):
     return HttpResponse('Hello World')
 
@@ -31,8 +39,6 @@ def download_notes(request):
     params = note_actions.process_download_params(body)
 
     notes = note_actions.get_notes_by_password(params)
-
-    print('note_1_', notes)
 
     return JsonResponse({'success': True, 'notes': notes})
 
