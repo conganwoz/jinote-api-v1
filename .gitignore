@@ -25,6 +25,9 @@ var/
 .installed.cfg
 *.egg
 
+jinote_api/__pycache__/
+__pycache__
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
