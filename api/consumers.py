@@ -24,11 +24,11 @@ class ChatConsumer(WebsocketConsumer):
         )
 
     def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message_type = text_data_json['message_type']
+        payload = json.loads(text_data)
+        message_type = payload['message_type']
 
         if message_type == 'receiver_connected':
-          message = text_data_json['message']
+          message = payload['message']
           async_to_sync(self.channel_layer.group_send)(
               self.room_group_name,
               {
@@ -37,9 +37,9 @@ class ChatConsumer(WebsocketConsumer):
                   'message_type': message_type
               }
           )
-          
-        elif message_type == 'sender_ice_candidate' or message_type == 'receiver_ice_candidate':
-          candidate = text_data_json['candidate']
+        elif (message_type=='sender_ice_candidate'
+                or message_type=='receiver_ice_candidate'):
+          candidate = payload['candidate']
           async_to_sync(self.channel_layer.group_send)(
               self.room_group_name,
               {
@@ -48,8 +48,9 @@ class ChatConsumer(WebsocketConsumer):
                   'message_type': message_type,
               }
           )
-        elif message_type == 'sender_desc' or message_type == 'receiver_desc':
-          description = text_data_json['description']
+        elif (message_type=='sender_desc'
+                or message_type=='receiver_desc'):
+          description = payload['description']
           async_to_sync(self.channel_layer.group_send)(
               self.room_group_name,
               {
@@ -58,9 +59,8 @@ class ChatConsumer(WebsocketConsumer):
                   'message_type': message_type,
               }
           )
-
         else:
-          message = text_data_json['message']
+          message = payload['message']
           async_to_sync(self.channel_layer.group_send)(
               self.room_group_name,
               {
@@ -70,16 +70,12 @@ class ChatConsumer(WebsocketConsumer):
               }
           )
 
-        # Send message to room group
-        
-
     # Receive message from room group
     def chat_message(self, event):
         message = event.get('message')
         message_type = event.get('message_type')
         description = event.get('description')
         candidate = event.get('candidate')
-
 
         # Send message to WebSocket
         self.send(text_data=json.dumps({
