@@ -9,19 +9,15 @@ class ChatConsumer(WebsocketConsumer):
         self.room_group_name = 'chat_%s' % self.room_name
 
         # Join room group
-        async_to_sync(self.channel_layer.group_add)(
-            self.room_group_name,
-            self.channel_name
-        )
+        async_to_sync(self.channel_layer.group_add)(self.room_group_name,
+                                                    self.channel_name)
 
         self.accept()
 
     def disconnect(self, close_code):
         # Leave room group
-        async_to_sync(self.channel_layer.group_discard)(
-            self.room_group_name,
-            self.channel_name
-        )
+        async_to_sync(self.channel_layer.group_discard)(self.room_group_name,
+                                                        self.channel_name)
 
     def receive(self, text_data):
         payload = json.loads(text_data)
@@ -35,10 +31,9 @@ class ChatConsumer(WebsocketConsumer):
                   'type': 'chat_message',
                   'message': message,
                   'message_type': message_type
-              }
-          )
+              })
         elif (message_type=='sender_ice_candidate'
-                or message_type=='receiver_ice_candidate'):
+              or message_type=='receiver_ice_candidate'):
           candidate = payload['candidate']
           async_to_sync(self.channel_layer.group_send)(
               self.room_group_name,
@@ -46,10 +41,9 @@ class ChatConsumer(WebsocketConsumer):
                   'type': 'chat_message',
                   'candidate': candidate,
                   'message_type': message_type,
-              }
-          )
+              })
         elif (message_type=='sender_desc'
-                or message_type=='receiver_desc'):
+              or message_type=='receiver_desc'):
           description = payload['description']
           async_to_sync(self.channel_layer.group_send)(
               self.room_group_name,
@@ -57,8 +51,7 @@ class ChatConsumer(WebsocketConsumer):
                   'type': 'chat_message',
                   'description': description,
                   'message_type': message_type,
-              }
-          )
+              })
         else:
           message = payload['message']
           async_to_sync(self.channel_layer.group_send)(
@@ -67,8 +60,7 @@ class ChatConsumer(WebsocketConsumer):
                   'type': 'chat_message',
                   'message': message,
                   'message_type': message_type,
-              }
-          )
+              })
 
     # Receive message from room group
     def chat_message(self, event):

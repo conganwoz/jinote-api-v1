@@ -10,9 +10,7 @@ def index(request):
 
 
 def room(request, room_name):
-    return render(request, 'chat/room.html', {
-        'room_name': room_name
-    })
+    return render(request, 'chat/room.html', {'room_name': room_name})
 
 
 def say_hello(reuqest):
@@ -43,4 +41,5 @@ def download_notes(request):
     notes = note_actions.get_notes_by_password(params)
 
     return JsonResponse({'success': True, 'notes': notes})
+
 
