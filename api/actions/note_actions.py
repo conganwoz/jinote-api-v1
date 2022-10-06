@@ -1,7 +1,7 @@
 from ..utils import common
 from api.models import Note
 
-def process_upload_params(body):
+def parse_upload_params(body):
     id = body.get('id')
     title = body.get('title')
     content = body.get('content')
@@ -28,11 +28,10 @@ def process_upload_params(body):
     if not common.is_empty(id):
         default_params['id'] = id
 
-    print('default_params__', default_params, body)
-
     return default_params
 
-def validate_params_upload(params):
+
+def validate_upload_params(params):
     if common.is_empty(params):
         return {
             'is_valid': False,
@@ -69,7 +68,8 @@ def validate_params_upload(params):
             'params': None
         }
 
-    if common.is_empty(params.get('hashed_unlock_key')) and common.is_empty(params.get('id')):
+    if (common.is_empty(params.get('hashed_unlock_key'))
+            and common.is_empty(params.get('id'))):
         return {
             'is_valid': False,
             'message': 'Lỗi xử lý dữ liệu. Vui lòng thử lại sau',
@@ -83,7 +83,8 @@ def validate_params_upload(params):
         'existed_note': existed_note
     }
 
-def process_download_params(body):
+
+def parse_download_params(body):
     alias = body.get('alias')
     password = body.get('password')
 
@@ -92,16 +93,27 @@ def process_download_params(body):
         'password': password or ''
     }
 
+
 def get_notes_by_password(params):
     alias = params['alias']
     password = params['password']
     password_hashed = common.passlib_encryption(password)
 
-    notes = list(map(lambda note: format(note), Note.objects.filter(alias=alias)[::1]))
-    print('prev_notes_', notes)
-    notes = list(filter(lambda note: common.passlib_encryption_verify(password, note.get('hashed_unlock_key')), notes))
+    notes = list(
+        map(lambda note: format(note),
+            Note.objects.filter(alias=alias)[::1])
+    )
+    notes = list(
+        filter(
+            lambda note:
+                common.passlib_encryption_verify(
+                    password, note.get('hashed_unlock_key')),
+            notes
+        )
+    )
 
     return notes
+
 
 def insert(params):
     title = params['title']
@@ -109,10 +121,16 @@ def insert(params):
     alias = params['alias']
     hashed_unlock_key = params['hashed_unlock_key']
 
-    note = Note(title=title, content=content, alias=alias, hashed_unlock_key=hashed_unlock_key)
+    note = Note(
+        title=title,
+        content=content,
+        alias=alias,
+        hashed_unlock_key=hashed_unlock_key
+    )
     note.save()
 
     return note
+
 
 def update(params):
     existed_note = params.get('existed_note')
@@ -153,4 +171,5 @@ def format(note):
         'updated_at': updated_at,
         'hashed_unlock_key': hashed_unlock_key
     }
+
 
