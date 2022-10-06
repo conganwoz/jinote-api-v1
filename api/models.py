@@ -10,6 +10,8 @@ class Note(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     alias = models.CharField(max_length=200)
     hashed_unlock_key = models.TextField()
+    is_published = models.BooleanField(default=False, db_index=True)
+    published_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         indexes = [

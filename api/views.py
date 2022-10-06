@@ -34,6 +34,23 @@ def upload_note(request):
     else:
         return JsonResponse(validation_result)
 
+def publish_notes(request):
+    body = request_utils.decode_body(request)
+    params = note_actions.parse_publish_params(body)
+
+    note_actions.do_publish_notes(params)
+
+    return JsonResponse({'success': True, 'message': 'Đã xuất bản ghi chú thành công'})
+
+
+def get_publish_notes(request):
+    body = request_utils.decode_body(request)
+    params = note_actions.parse_get_publish_notes_params(body)
+
+    data = note_actions.do_get_publish_notes(params)
+
+    return JsonResponse({'success': True, data: data})
+
 
 def download_notes(request):
     body = request_utils.decode_body(request)

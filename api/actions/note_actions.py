@@ -1,3 +1,5 @@
+from django.db import connection
+
 from ..utils import common
 from api.models import Note
 
@@ -90,8 +92,65 @@ def parse_download_params(body):
 
     return {
         'alias': alias or '',
-        'password': password or ''
+        'password': password or '',
     }
+
+def parse_publish_params(body):
+    notes = body.get('notes')
+    alias = body.get('alias')
+    synced_notes = []
+    not_synced_notes = []
+
+    if common.is_empty(notes):
+        notes = []
+
+    synced_notes = [note for note in notes if not common.is_empty(note.cloud_id)]
+
+    not_synced_notes = [note for note in notes if common.is_empty(note.cloud_id)]
+
+    return {
+        'alias': alias or '',
+        'synced_notes': synced_notes,
+        'not_synced_notes': not_synced_notes,
+    }
+
+def parse_get_publish_notes_params(body):
+    from_index = body.get('from_index')
+
+    return {
+        'from_index': from_index
+    }
+
+
+def do_publish_notes(params):
+    alias = params['alias']
+    synced_notes = params['synced_notes']
+    not_synced_notes = params['not_synced_notes']
+
+    # update synced notes to published
+    synced_note_ids = [note.cloud_id for note in synced_notes]
+    Note.objects.filter(id_in=synced_note_ids).update(is_published=True, alias=alias)
+
+    for note in not_synced_notes:
+        Note(
+            title=note['title'],
+            content=note['content'],
+            alias=note['alias'],
+            hashed_unlock_key='',
+        ).save()
+
+
+def do_get_publish_notes(params):
+    from_index = params['from_index']
+    if common.is_empty(from_index):
+        from_index = 0
+    else:
+        from_index = int(from_index)
+
+    data = Note.objects.filter(is_published=True)[from_index: from_index + 10]
+    data = list(map(lambda note: format(note), data))
+
+    return data
 
 
 def get_notes_by_password(params):
