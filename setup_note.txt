@@ -80,3 +80,9 @@ list all migration:
 
 un-apply migration:
 -> python manage.py migrate api migration_file_name before the migrattion want to un-apply
+
+run command in docker shell:
+-> sudo docker-compose run web ...
+
+start docker image:
+-> docker-compose up
